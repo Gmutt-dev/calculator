@@ -1,0 +1,46 @@
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    width: 300px;
+    border-style: solid;
+    border-radius: 5px;
+
+}
+
+.display {
+    text-align: right;
+    border-style: solid;
+    border-radius: 5px;
+    margin: 3px;
+    padding-right: 2px;
+    font-size: 56px;
+}
+
+.row {
+    display: flex;
+    flex: 1 0 0;
+}
+
+.button {
+    flex: 1 0 0;
+    border-radius: 5px;
+    margin: 3px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.doublebutton {
+    flex: 2 0 auto;
+    /* padding left and right adjusted to account for lost pixels resulting*/
+    /* from one big button in stead of two small buttons +4px each side*/
+    padding: 1px 10px;
+}
+
