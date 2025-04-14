@@ -18,7 +18,25 @@ function divide(operandLeft, operandRight) {
     return (operandLeft / operandRight);
 }
 
+//funtion receiving the operator and two operands, then calls one of the operator funtions
+function operate(operator, operandLeft, operandRight) {
+    switch (operator) {
+        case '+':
+            return add(operandLeft, operandRight);
+            break;
+        case '-':
+            return subtract(operandLeft, operandRight);
+            break;
+        case '*':
+            return multiply(operandLeft, operandRight);
+            break;
+        case '/':
+            return divide(operandLeft, operandRight);
+            break;
+    }
+}
+
 //MAIN SCRIPT START
-leftOperand = null;
+operandLeft = null;
 operator = null;
-rightOperand = null;
+operandRight = null;
