@@ -18,3 +18,7 @@ function divide(operandLeft, operandRight) {
     return (operandLeft / operandRight);
 }
 
+//MAIN SCRIPT START
+leftOperand = null;
+operator = null;
+rightOperand = null;
