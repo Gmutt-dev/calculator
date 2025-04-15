@@ -3,6 +3,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
@@ -21,7 +22,7 @@ body {
     border-radius: 5px;
     margin: 3px;
     padding-right: 2px;
-    font-size: 56px;
+    font-size: 48px;
 }
 
 .row {
