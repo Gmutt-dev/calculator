@@ -98,13 +98,22 @@ calculator.addEventListener("click", (e) => {
             updateDisplay(operate(operator, operandLeft, operandRight));
             clearOnNextPress = true;
             operandLeft = null;
-            operandRight = null;
             operator = null;
+            operandRight = null;
         }
         // "." button pressed -> add . to display value only if there isn't a . already
         else if (e.target.textContent === ".") {
             if (clearOnNextPress === true) updateDisplay("0."); //if . pressed after operator pressed put 0. on display
             else if (!display.textContent.includes(".")) updateDisplay(".");  //else update display with . if no . on display already
+        }
+        // "C" button pressed -> reset display
+        else if (e.target.textContent === "C") resetDisplay();
+        // "AC" button pressed -> reset display and clear all values and operators of calculator
+        else if (e.target.textContent === "AC") {
+            resetDisplay();
+            operandLeft = null;
+            operator = null;
+            operandRight = null;
         }
     }
 })
