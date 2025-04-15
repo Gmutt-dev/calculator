@@ -46,7 +46,7 @@ function clearDisplay() {
 }
 
 function updateDisplay(value) {
-    if (display.textContent === "0") clearDisplay(); // remove default zero if currently the value in the display
+    if (display.textContent === "0" && value !== ".") clearDisplay(); // remove default zero if currently the value in the display
     if (clearOnNextPress === true) {  //if previous button pressed was an operator, clear display before adding new chars
         clearDisplay();
         clearOnNextPress = false; //reset clearOnNextPress
@@ -101,6 +101,10 @@ calculator.addEventListener("click", (e) => {
             operandRight = null;
             operator = null;
         }
-
+        // "." button pressed -> add . to display value only if there isn't a . already
+        else if (e.target.textContent === ".") {
+            if (clearOnNextPress === true) updateDisplay("0."); //if . pressed after operator pressed put 0. on display
+            else if (!display.textContent.includes(".")) updateDisplay(".");  //else update display with . if no . on display already
+        }
     }
 })
