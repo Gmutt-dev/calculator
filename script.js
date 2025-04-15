@@ -148,8 +148,15 @@ calculator.addEventListener("click", (e) => {
             if (previousPressOperator === true || previousPressEqual === true) updateDisplay("0."); //if . pressed after operator or equal pressed put "0." on display
             else if (!display.textContent.includes(".")) updateDisplay(".");  //else update display with . if no . on display already
         }
-        // "←" (back) button pressed -> remove one character from back of display content (only if last button pressed was not an operator or equal)
-        else if (e.target.textContent === "←" && previousPressOperator !== true && previousPressEqual !== true) display.textContent = display.textContent.substring(0, display.textContent.length - 1);
+        // "←" (back) button pressed AND last button pressed was not an operator or equal AND not "0" -> remove one character from back of display content
+        // (unless only 1x char 1..9 in display then replace with "0"
+        else if (e.target.textContent === "←" &&  display.textContent !== "0" && previousPressOperator !== true && previousPressEqual !== true) {
+            //if display has more than one char remove most right char
+            if (display.textContent.length > 1) display.textContent = display.textContent.substring(0, display.textContent.length - 1);
+            //else replace the last char with a "0"
+            else display.textContent = "0";
+        }
+            
         // "AC" button pressed -> reset display and clear all values and operators of calculator
         else if (e.target.textContent === "AC") {
             resetDisplay();
