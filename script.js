@@ -18,6 +18,13 @@ function divide(operandLeft, operandRight) {
     return (operandLeft / operandRight);
 }
 
+//resets calculator operands and operator to null
+function resetCalculator() {
+    operandLeft = null;
+    operandRight = null;
+    operator = null;
+}
+
 //funtion receiving the operator and two operands, then calls one of the operator funtions
 function operate(operator, operandLeft, operandRight) {
     switch (operator) {
@@ -31,7 +38,13 @@ function operate(operator, operandLeft, operandRight) {
             return multiply(operandLeft, operandRight);
             break;
         case '÷':
-            return divide(operandLeft, operandRight);
+            if (operandRight === 0) {
+                resetDisplay();
+                clearOnNextPress = true;
+                resetCalculator();
+                return("ROFL");
+            }
+            else return divide(operandLeft, operandRight);
             break;
     }
 }
@@ -69,7 +82,7 @@ const display = document.querySelector(".display");
 const calculator = document.querySelector(".container");
 //put an eventlistener on the container
 calculator.addEventListener("click", (e) => {
-    if (e.target.tagName === "BUTTON") { //only handle event if one of the buttons is clicked
+    if (e.target.tagName === "BUTTON") { //only handle event if one of the buttons is clicked, ignore if any other part of calculator clicked
         // "1..9" button pressed -> if 1..9 updateDisplay() 
         if (Number.parseInt(e.target.textContent)) { // (NB won't return true for zero)
             updateDisplay(e.target.textContent);
@@ -103,9 +116,7 @@ calculator.addEventListener("click", (e) => {
             clearDisplay();
             updateDisplay(operate(operator, operandLeft, operandRight));
             clearOnNextPress = true;
-            operandLeft = null;
-            operator = null;
-            operandRight = null;
+            resetCalculator();
             //else ignore button
         }
         // "." button pressed -> add . to display value only if there isn't a . already
@@ -118,9 +129,7 @@ calculator.addEventListener("click", (e) => {
         // "AC" button pressed -> reset display and clear all values and operators of calculator
         else if (e.target.textContent === "AC") {
             resetDisplay();
-            operandLeft = null;
-            operator = null;
-            operandRight = null;
+            resetCalculator();
         }
     }
 })
