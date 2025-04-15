@@ -70,19 +70,24 @@ const calculator = document.querySelector(".container");
 //put an eventlistener on the container
 calculator.addEventListener("click", (e) => {
     if (e.target.tagName === "BUTTON") { //only handle event if one of the buttons is clicked
-        if (Number.parseInt(e.target.textContent)) { // if 1..9 updateDisplay() (NB won't return true for zero)
+        // "1..9" button pressed -> if 1..9 updateDisplay() 
+        if (Number.parseInt(e.target.textContent)) { // (NB won't return true for zero)
             updateDisplay(e.target.textContent);
         }
-        else if (e.target.textContent === "0") {
-            if (display.textContent !== "0") updateDisplay("0");  //only add zero if there is a number 1..9 before it already
+        // "0" button pressed -> only add zero to the display if there is a number 1..9 before it already
+        else if (e.target.textContent === "0") {  
+            if (display.textContent !== "0") updateDisplay("0");  
         }
-        else if (operators.includes(e.target.textContent)) {  //if one of the operators pressed
+        // "+-x÷" button pressed ->
+        else if (operators.includes(e.target.textContent)) {
+            // if left operand unassigned, assign display value to it.
             if (operandLeft === null) {
                 operator = e.target.textContent;
                 operandLeft = Number.parseFloat(display.textContent);  
                 clearOnNextPress = true;
             }    
-            else {  // if left operand already assigned a number rather assign current value to right operand AND calculate and print the result
+            // if left operand already assigned, rather assign current display value to right operand AND calculate and print the result
+            else {  
                 operandRight = Number.parseFloat(display.textContent);
                 clearDisplay();
                 updateDisplay(operate(operator, operandLeft, operandRight));
@@ -92,6 +97,7 @@ calculator.addEventListener("click", (e) => {
                 operator = e.target.textContent;
             }
         }
+        // "=" button pressed -> calculate result and update display
         else if (e.target.textContent === "=" && operator !== null) { //only handle = button if an operator has been assigned
             operandRight = Number.parseFloat(display.textContent);
             clearDisplay();
@@ -100,6 +106,7 @@ calculator.addEventListener("click", (e) => {
             operandLeft = null;
             operator = null;
             operandRight = null;
+            //else ignore button
         }
         // "." button pressed -> add . to display value only if there isn't a . already
         else if (e.target.textContent === ".") {
