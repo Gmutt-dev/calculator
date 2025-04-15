@@ -45,14 +45,13 @@ function clearDisplay() {
     display.textContent = "";
 }
 
-function updateDisplay(char) {
-    if (display.textContent === "0") display.textContent = ""; // remove default zero if currently the value in the display
-    console.log(previousButtonPressed);
-    if (previousButtonPressed === "operator") {  //if previous button pressed was an operator, clear display before adding new chars
+function updateDisplay(value) {
+    if (display.textContent === "0") clearDisplay(); // remove default zero if currently the value in the display
+    if (clearOnNextPress === true) {  //if previous button pressed was an operator, clear display before adding new chars
         clearDisplay();
-        previousButtonPressed = null; //reset previousButtonPressed
+        clearOnNextPress = false; //reset clearOnNextPress
     }
-    display.textContent += char;
+    display.textContent += value;
 }
 
 //MAIN SCRIPT START
@@ -60,7 +59,7 @@ let operandLeft = null;
 let operator = null;
 let operandRight = null;
 
-let previousButtonPressed = null;
+let clearOnNextPress = false;
 
 const operators ="+-x÷";
 
@@ -81,17 +80,26 @@ calculator.addEventListener("click", (e) => {
             if (operandLeft === null) {
                 operator = e.target.textContent;
                 operandLeft = Number.parseFloat(display.textContent);  
-                previousButtonPressed = "operator";
+                clearOnNextPress = true;
             }    
             else {  // if left operand already assigned a number rather assign current value to right operand AND calculate and print the result
                 operandRight = Number.parseFloat(display.textContent);
                 clearDisplay();
                 updateDisplay(operate(operator, operandLeft, operandRight));
-                previousButtonPressed = "operator";
+                clearOnNextPress = true;
                 operandLeft = Number.parseFloat(display.textContent);
                 operandRight = null;
                 operator = e.target.textContent;
             }
+        }
+        else if (e.target.textContent === "=" && operator !== null) { //only handle = button if an operator has been assigned
+            operandRight = Number.parseFloat(display.textContent);
+            clearDisplay();
+            updateDisplay(operate(operator, operandLeft, operandRight));
+            clearOnNextPress = true;
+            operandLeft = null;
+            operandRight = null;
+            operator = null;
         }
 
     }
