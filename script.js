@@ -49,6 +49,21 @@ function operate(operator, operandLeft, operandRight) {
     }
 }
 
+//function to check if string is 10 digits or less long.  If longer, round to fit 10 digits
+function toMaxTenDigits(string) {
+    // if 10 digits or less, just return string
+    console.log(typeof string);
+    if (string.length <= 10) return string;
+    // if no decimal point in number -> Error: number too large to display
+    else if (string.indexOf(".") === -1) {
+        return "E - too large";
+    }
+    // if has decimal point, move decimal to just after 9th number, round number, move decimal back by same number of digits
+    else {
+        return Math.round(Number.parseFloat(string) * (10 ** (9 - string.indexOf(".")))) / 10 **(9 - string.indexOf("."));
+    }
+}
+
 //reset display to "0"
 function resetDisplay() {
     display.textContent = "0";
@@ -59,12 +74,14 @@ function clearDisplay() {
 }
 
 function updateDisplay(value) {
-    if (display.textContent === "0" && value !== ".") clearDisplay(); // remove default zero if currently the value in the display
+    let newDisplay = display.textContent;  //get current display in variable to work with
+    if (newDisplay === "0" && value !== ".") newDisplay = ""; // remove default zero if currently the value in the display, except when adding a "."
     if (clearOnNextPress === true) {  //if previous button pressed was an operator, clear display before adding new chars
-        clearDisplay();
+        newDisplay = "";
         clearOnNextPress = false; //reset clearOnNextPress
     }
-    display.textContent += value;
+    newDisplay += value;
+    display.textContent = toMaxTenDigits(newDisplay); //update DOM display after making sure max 10 digits
 }
 
 //MAIN SCRIPT START
@@ -83,18 +100,20 @@ const calculator = document.querySelector(".container");
 //put an eventlistener on the container
 calculator.addEventListener("click", (e) => {
     if (e.target.tagName === "BUTTON") { //only handle event if one of the buttons is clicked, ignore if any other part of calculator clicked
-        // "1..9" button pressed -> if 1..9 updateDisplay() 
-        if (Number.parseInt(e.target.textContent)) { // (NB won't return true for zero)
+        // "1..9" button pressed + display is not full with 10 digits already ->  
+        if (Number.parseInt(e.target.textContent) && display.textContent.length < 10) { // (NB won't return true for zero)
             updateDisplay(e.target.textContent);
         }
-        // "0" button pressed -> only add zero to the display if there is a number 1..9 before it already
-        else if (e.target.textContent === "0") {  
+        // "0" button pressed -> only add zero to the display if there is a number 1..9 before it and display isn't full with 10 digits already
+        else if (e.target.textContent === "0"  && display.textContent.length < 10) {  
             if (display.textContent !== "0") updateDisplay("0");  
         }
         // "+-x÷" button pressed ->
         else if (operators.includes(e.target.textContent)) {
+            // if previous button pressed wat also an operator, just change the operator for this calculation
+            if (clearOnNextPress === true) operator = e.target.textContent;
             // if left operand unassigned, assign display value to it.
-            if (operandLeft === null) {
+            else if (operandLeft === null) {
                 operator = e.target.textContent;
                 operandLeft = Number.parseFloat(display.textContent);  
                 clearOnNextPress = true;
@@ -119,8 +138,8 @@ calculator.addEventListener("click", (e) => {
             resetCalculator();
             //else ignore button
         }
-        // "." button pressed -> add . to display value only if there isn't a . already
-        else if (e.target.textContent === ".") {
+        // "." button pressed -> add . to display value only if there isn't a "." already and the display isn't full with 10 digits already
+        else if (e.target.textContent === "." && display.textContent.length < 10) {
             if (clearOnNextPress === true) updateDisplay("0."); //if . pressed after operator pressed put 0. on display
             else if (!display.textContent.includes(".")) updateDisplay(".");  //else update display with . if no . on display already
         }
