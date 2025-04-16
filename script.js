@@ -57,10 +57,10 @@ function handleInputEqual() {
         resetCalculator();
         // set result of equals to operandLeft in case next button is an operator
         operandLeft = tempResult;
+        previousInputEqual = true;
     }
     //else ignore button
     currentInputEqual = false;
-    previousInputEqual = true;
     previousInputOperator = false;  
 }
 
