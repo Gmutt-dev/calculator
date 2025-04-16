@@ -132,14 +132,16 @@ function operate(operator, operandLeft, operandRight) {
 function toMaxTenDigits(string) {
     // if 10 digits or less, just return string
     if (string.length <= 10) return string;
-    // if no decimal point in number -> Error: number too large to display
-    else if (string.indexOf(".") === -1) {
+    // if no decimal point in number and not user input -> Error: number too large to display
+    else if (string.indexOf(".") === -1 && (previousInputEqual || previousInputOperator)) {
         return "Err-maxdigits";
     }
     // if has decimal point round by -> move decimal to just after 9th number, round number, move decimal back by same number of digits
-    else {
+    else if (previousInputEqual || previousInputOperator) { // filter out user input strings that should only ignore any more input after 10 digits reached
         return Math.round(Number.parseFloat(string) * (10 ** (9 - string.indexOf(".")))) / 10 **(9 - string.indexOf("."));
     }
+    // else return the string with the last digit thrown away
+    else return string.slice(0 , length -1);
 }
 
 //reset display to "0"
@@ -157,11 +159,11 @@ function updateDisplay(value) {
     if (newDisplay === "0" && value !== ".") newDisplay = ""; // remove default zero if currently the value in the display, except when adding a "."
     if (previousInputOperator === true || previousInputEqual === true) {  //if previous button pressed was an operator, clear display before adding new chars
         newDisplay = "";
-        previousInputOperator = false; //reset previousInputOperator
-        previousInputEqual = false; //reset previousInputEqual
     }
     newDisplay += value;
     display.textContent = toMaxTenDigits(newDisplay); //update DOM display after making sure max 10 digits
+    previousInputOperator = false; //reset previousInputOperator
+    previousInputEqual = false; //reset previousInputEqual
 }
 
 //MAIN SCRIPT START
