@@ -9,7 +9,7 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    height: 300px;
+    height: 350px;
     width: 300px;
     border-style: solid;
     border-radius: 5px;
@@ -31,6 +31,11 @@ body {
     flex: 1 0 0;
 }
 
+.top.row {
+    justify-content: right;
+
+}
+
 .button {
     flex: 1 0 0;
     margin: 3px;
@@ -38,13 +43,16 @@ body {
 }
 
 .button.back {
-    font-size:48px;
+    /* font-size:48px; */
+    /* justify-self:right; */
+    width: 114px;
+    flex: 0 0 auto;
 }
 
 .button.doublebutton {
     flex: 2 0 auto;
     /* padding left and right adjusted to account for lost pixels resulting*/
     /* from one big button in stead of two small buttons +4px each side*/
-    padding: 1px 10px;
+    padding: 1px 9.3px;
 }
 
