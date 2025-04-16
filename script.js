@@ -1,3 +1,77 @@
+
+// "1..9" input -> update display
+function handleInput1to9(inputValue) {
+    updateDisplay(inputValue);
+    
+}
+
+// "0" input -> only add zero to the display if there is a number 1..9 before it
+function handleInput0() {
+    if (display.textContent !== "0") updateDisplay("0"); 
+}
+
+// "+-x÷" operator input ->
+function handleInputOperator(inputValue) {
+    // if previous input was also an operator, just change the operator for this calculation
+    if (previousInputOperator === true) operator = inputValue;
+    // if left operand unassigned, assign display value to it.
+    else if (operandLeft === null) {
+        operator = inputValue;
+        operandLeft = Number.parseFloat(display.textContent); 
+        previousInputOperator = true;
+    }    
+    // if left operand already assigned, rather assign current display value to right operand AND calculate and print the result,
+    // finally place result in leftOperand, null the rightOperand and set operator as this handled operand button
+    else {  
+        operandRight = Number.parseFloat(display.textContent);
+        clearDisplay();
+        updateDisplay(operate(operator, operandLeft, operandRight));
+        operandLeft = Number.parseFloat(display.textContent);
+        operandRight = null;
+        operator = inputValue;
+        previousInputOperator = true;
+    }
+}
+
+// "=" input -> calculate result and update display
+function handleInputEqual() {
+    if (operator !== null) {  //only handle = button if an operator has been assigned
+        operandRight = Number.parseFloat(display.textContent);
+        clearDisplay();
+        updateDisplay(operate(operator, operandLeft, operandRight));
+        previousInputEqual = true;
+        resetCalculator();
+    }
+    //else ignore button
+    
+}
+
+// "." input -> add . to display value only if there isn't a "." already
+function handleInputDecimalPoint() {
+    //if . pressed after operator or equal pressed put "0." on display
+    if (previousInputOperator === true || previousInputEqual === true) updateDisplay("0."); 
+    //else update display with . if no . on display already
+    else if (!display.textContent.includes(".")) updateDisplay("."); 
+    
+}
+
+// "←" (back / backspace) input AND last input was not an operator or equal AND not "0" -> remove one character from back of display content
+// (unless only 1x char 1..9 in display then replace with "0"
+function handleInputBack() {
+    if (previousInputOperator !== true && previousInputEqual !== true && display.textContent !== "0"){
+        //if display has more than one char remove most right char 
+        if (display.textContent.length > 1) display.textContent = display.textContent.substring(0, display.textContent.length - 1);
+        //else replace the last char with a "0"
+        else display.textContent = "0";
+    } 
+}
+
+// "AC" button pressed -> reset display and clear all values and operators of calculator
+function handleInputAC() {
+    resetDisplay();
+    resetCalculator();
+}
+
 //adds two numbers (integer or float -> return int or float)
 function add(operandLeft, operandRight) {
     return (operandLeft + operandRight);
@@ -40,7 +114,7 @@ function operate(operator, operandLeft, operandRight) {
         case '÷':
             if (operandRight === 0) {  //No division by zero!
                 resetDisplay();
-                previousPressOperator = true;
+                previousInputOperator = true;
                 resetCalculator();
                 return("ROFL");
             }
@@ -76,10 +150,10 @@ function clearDisplay() {
 function updateDisplay(value) {
     let newDisplay = display.textContent;  //get current display in new variable to work with
     if (newDisplay === "0" && value !== ".") newDisplay = ""; // remove default zero if currently the value in the display, except when adding a "."
-    if (previousPressOperator === true || previousPressEqual === true) {  //if previous button pressed was an operator, clear display before adding new chars
+    if (previousInputOperator === true || previousInputEqual === true) {  //if previous button pressed was an operator, clear display before adding new chars
         newDisplay = "";
-        previousPressOperator = false; //reset previousPressOperator
-        previousPressEqual = false; //reset previousPressEqual
+        previousInputOperator = false; //reset previousInputOperator
+        previousInputEqual = false; //reset previousInputEqual
     }
     newDisplay += value;
     display.textContent = toMaxTenDigits(newDisplay); //update DOM display after making sure max 10 digits
@@ -90,8 +164,8 @@ let operandLeft = null;
 let operator = null;
 let operandRight = null;
 
-let previousPressOperator = false;
-let previousPressEqual = false;
+let previousInputOperator = false;
+let previousInputEqual = false;
 
 const operators ="+-x÷";
 
@@ -104,63 +178,23 @@ const calculator = document.querySelector(".container");
 calculator.addEventListener("click", (e) => {
     //only handle event if one of the buttons is clicked, ignore if any other part of calculator clicked
     if (e.target.tagName === "BUTTON") { 
-        // "1..9" button pressed ->  
-        if (Number.parseInt(e.target.textContent)) { // (NB won't return true for zero)
-            updateDisplay(e.target.textContent);
-        }
-        // "0" button pressed -> only add zero to the display if there is a number 1..9 before it
-        else if (e.target.textContent === "0") {  
-            if (display.textContent !== "0") updateDisplay("0");  
-        }
-        // "+-x÷" button pressed ->
-        else if (operators.includes(e.target.textContent)) {
-            // if previous button pressed wat also an operator, just change the operator for this calculation
-            if (previousPressOperator === true) operator = e.target.textContent;
-            // if left operand unassigned, assign display value to it.
-            else if (operandLeft === null) {
-                operator = e.target.textContent;
-                operandLeft = Number.parseFloat(display.textContent); 
-                previousPressOperator = true;
-            }    
-            // if left operand already assigned, rather assign current display value to right operand AND calculate and print the result,
-            // finally place result in leftOperand, null the rightOperand and set operator as this handled operand button
-            else {  
-                operandRight = Number.parseFloat(display.textContent);
-                clearDisplay();
-                updateDisplay(operate(operator, operandLeft, operandRight));
-                previousPressOperator = true;
-                operandLeft = Number.parseFloat(display.textContent);
-                operandRight = null;
-                operator = e.target.textContent;
-            }
-        }
-        // "=" button pressed -> calculate result and update display
-        else if (e.target.textContent === "=" && operator !== null) { //only handle = button if an operator has been assigned
-            operandRight = Number.parseFloat(display.textContent);
-            clearDisplay();
-            updateDisplay(operate(operator, operandLeft, operandRight));
-            previousPressEqual = true;
-            resetCalculator();
-            //else ignore button
-        }
-        // "." button pressed -> add . to display value only if there isn't a "." already
-        else if (e.target.textContent === ".") {
-            if (previousPressOperator === true || previousPressEqual === true) updateDisplay("0."); //if . pressed after operator or equal pressed put "0." on display
-            else if (!display.textContent.includes(".")) updateDisplay(".");  //else update display with . if no . on display already
-        }
-        // "←" (back) button pressed AND last button pressed was not an operator or equal AND not "0" -> remove one character from back of display content
-        // (unless only 1x char 1..9 in display then replace with "0"
-        else if (e.target.textContent === "←" &&  display.textContent !== "0" && previousPressOperator !== true && previousPressEqual !== true) {
-            //if display has more than one char remove most right char
-            if (display.textContent.length > 1) display.textContent = display.textContent.substring(0, display.textContent.length - 1);
-            //else replace the last char with a "0"
-            else display.textContent = "0";
-        }
-            
-        // "AC" button pressed -> reset display and clear all values and operators of calculator
-        else if (e.target.textContent === "AC") {
-            resetDisplay();
-            resetCalculator();
-        }
+        
+        //assign button's label (.textContent) to varialble buttonPressedValue to make rest of code more legible
+        const buttonPressedValue = e.target.textContent;
+
+        // "1..9" button pressed (NB won't return true for zero)
+        if (Number.parseInt(buttonPressedValue)) handleInput1to9(buttonPressedValue);
+        // "0" button pressed
+        else if (buttonPressedValue === "0") handleInput0();
+        // "+-x÷" operator button pressed ->
+        else if (operators.includes(buttonPressedValue)) handleInputOperator(buttonPressedValue);
+        // "=" button pressed ->
+        else if (buttonPressedValue === "=") handleInputEqual();
+        // "." button pressed ->
+        else if (buttonPressedValue === ".") handleInputDecimalPoint();
+        // "←" (back) button pressed ->
+        else if (buttonPressedValue === "←") handleInputBack();
+        // "AC" button pressed ->
+        else if (buttonPressedValue === "AC") handleInputAC();
     }
 })
