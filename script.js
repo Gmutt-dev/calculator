@@ -206,6 +206,7 @@ calculator.addEventListener("click", (e) => {
     }
 })
 
+//put an eventlistener on the DOM for keyboard inputs
 document.addEventListener("keydown", (e) => {
     //assign keyboard key pressed value to variable to make rest of the code more legible
     keyPressedValue = e.key;

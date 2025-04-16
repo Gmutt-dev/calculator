@@ -17,6 +17,7 @@ body {
 }
 
 .display {
+    flex: 1.7 0 0;
     text-align: right;
     border-style: solid;
     border-radius: 5px;
@@ -36,7 +37,11 @@ body {
     font-size: 24px;
 }
 
-.doublebutton {
+.button.back {
+    font-size:48px;
+}
+
+.button.doublebutton {
     flex: 2 0 auto;
     /* padding left and right adjusted to account for lost pixels resulting*/
     /* from one big button in stead of two small buttons +4px each side*/
