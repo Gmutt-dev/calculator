@@ -134,7 +134,7 @@ function toMaxTenDigits(string) {
     if (string.length <= 10) return string;
     // if no decimal point in number -> Error: number too large to display
     else if (string.indexOf(".") === -1) {
-        return "E - too large";
+        return "Err-maxdigits";
     }
     // if has decimal point round by -> move decimal to just after 9th number, round number, move decimal back by same number of digits
     else {
