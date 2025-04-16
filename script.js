@@ -66,7 +66,12 @@ function handleInputBack() {
     } 
 }
 
-// "AC" button pressed -> reset display and clear all values and operators of calculator
+// "C" input -> reset the display
+function handleInputClear() {
+    resetDisplay();
+}
+
+// "AC" input -> reset display and clear all values and OPERATORS of calculator
 function handleInputAC() {
     resetDisplay();
     resetCalculator();
@@ -167,7 +172,7 @@ let operandRight = null;
 let previousInputOperator = false;
 let previousInputEqual = false;
 
-const operators ="+-x÷";
+const OPERATORS ="+-x÷";
 
 //get the display node by reference
 const display = document.querySelector(".display");
@@ -178,7 +183,7 @@ const calculator = document.querySelector(".container");
 calculator.addEventListener("click", (e) => {
     //only handle event if one of the buttons is clicked, ignore if any other part of calculator clicked
     if (e.target.tagName === "BUTTON") { 
-        
+
         //assign button's label (.textContent) to varialble buttonPressedValue to make rest of code more legible
         const buttonPressedValue = e.target.textContent;
 
@@ -187,14 +192,74 @@ calculator.addEventListener("click", (e) => {
         // "0" button pressed
         else if (buttonPressedValue === "0") handleInput0();
         // "+-x÷" operator button pressed ->
-        else if (operators.includes(buttonPressedValue)) handleInputOperator(buttonPressedValue);
+        else if (OPERATORS.includes(buttonPressedValue)) handleInputOperator(buttonPressedValue);
         // "=" button pressed ->
         else if (buttonPressedValue === "=") handleInputEqual();
         // "." button pressed ->
         else if (buttonPressedValue === ".") handleInputDecimalPoint();
         // "←" (back) button pressed ->
         else if (buttonPressedValue === "←") handleInputBack();
+        // "C" button pressed ->
+        else if (buttonPressedValue === "C") handleInputClear();
         // "AC" button pressed ->
         else if (buttonPressedValue === "AC") handleInputAC();
     }
 })
+
+document.addEventListener("keydown", (e) => {
+    //assign keyboard key pressed value to variable to make rest of the code more legible
+    keyPressedValue = e.key;
+
+    //if "1..9" key is pressed
+    if (Number.parseInt(keyPressedValue)) handleInput1to9(keyPressedValue);
+    //if any other value is pressed
+    else switch (keyPressedValue) {
+            case "0":
+                handleInput0();
+                break;
+            case "+":
+                handleInputOperator("+");
+                break;
+            case "-":
+                handleInputOperator("-");
+                break;
+            //for all multiplication possibilities:
+            case "x":
+            case "X":
+            case "*":
+                handleInputOperator("x");
+                break;
+            //for all division possibilities:
+            case "/":
+            case "\\":
+                handleInputOperator("÷");
+                break;
+            //for all equals possibilities
+            case "=":
+            case "Enter":
+                handleInputEqual();
+                break;
+            //for all decimal point possiblities
+            case ".":
+            case ",":
+                handleInputDecimalPoint();
+                break;
+            case "Backspace":
+                handleInputBack();
+                break;
+            //for all Clear possibilities
+            case "c":
+            case "C":
+            case "Delete":
+                handleInputClear();
+                break;
+            //handle all AC possiblities
+            case "a":
+            case "A":
+            case "Escape":
+                handleInputAC();
+                break;
+            default:  //ignore
+    }
+})
+
