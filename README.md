@@ -1,4 +1,6 @@
-# calculator
+# Calculator
+
+https://www.theodinproject.com/lessons/foundations-calculator#assignment
 
 ### [**Assignment**](https://www.theodinproject.com/lessons/foundations-calculator#assignment)
 
