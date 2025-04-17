@@ -20,29 +20,35 @@ function handleInput0() {
 // "+-x÷" operator input ->
 function handleInputOperator(inputValue) {
     currentInputOperator = true;
-    // if previous input was also an operator, just change the operator for this calculation
-    if (previousInputOperator === true || previousInputEqual === true) {
-        operator = inputValue;
+    console.log(Number.parseFloat(display.textContent));
+    //only handle operator if the current display shows a number (e.g. not "ROFL" after divide by zero)
+    if (!Number.isNaN(Number.parseFloat(display.textContent))) {
+        console.log("xxx");
+        // if previous input was also an operator, just change the operator for this calculation
+        if (previousInputOperator === true || previousInputEqual === true) {
+            operator = inputValue;
+        }
+        // if left operand unassigned, assign display value to it.
+        else if (operandLeft === null) {
+            operator = inputValue;
+            operandLeft = Number.parseFloat(display.textContent); 
+        }    
+        // if left left operand already assigned, rather assign current display value to right operand AND calculate and print the result,
+        // finally place result in leftOperand, null the rightOperand and set operator as this handled operand button
+        else {  
+            operandRight = Number.parseFloat(display.textContent);
+            clearDisplay();
+            result = operate(operator, operandLeft, operandRight);
+            updateDisplay(result);
+            operandLeft = result;
+            operandRight = null;
+            operator = inputValue;
+        }
+        currentInputOperator = false;
+        previousInputOperator = true;
+        previousInputEqual = false;
     }
-    // if left operand unassigned, assign display value to it.
-    else if (operandLeft === null) {
-        operator = inputValue;
-        operandLeft = Number.parseFloat(display.textContent); 
-    }    
-    // if left left operand already assigned, rather assign current display value to right operand AND calculate and print the result,
-    // finally place result in leftOperand, null the rightOperand and set operator as this handled operand button
-    else {  
-        operandRight = Number.parseFloat(display.textContent);
-        clearDisplay();
-        result = operate(operator, operandLeft, operandRight);
-        updateDisplay(result);
-        operandLeft = result;
-        operandRight = null;
-        operator = inputValue;
-    }
-    currentInputOperator = false;
-    previousInputOperator = true;
-    previousInputEqual = false;
+    // else ignore input
 }
 
 // "=" input -> calculate result and update display
@@ -132,7 +138,6 @@ function operate(operator, operandLeft, operandRight) {
                 case '÷':
             if (operandRight === 0) {  //No division by zero!
                 resetDisplay();
-                previousInputOperator = true;
                 resetCalculator();
                 return("ROFL");
             }
