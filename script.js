@@ -20,10 +20,8 @@ function handleInput0() {
 // "+-x÷" operator input ->
 function handleInputOperator(inputValue) {
     currentInputOperator = true;
-    console.log(Number.parseFloat(display.textContent));
     //only handle operator if the current display shows a number (e.g. not "ROFL" after divide by zero)
     if (!Number.isNaN(Number.parseFloat(display.textContent))) {
-        console.log("xxx");
         // if previous input was also an operator, just change the operator for this calculation
         if (previousInputOperator === true || previousInputEqual === true) {
             operator = inputValue;
@@ -93,7 +91,6 @@ function handleInputBack() {
 
 // "C" input -> reset the display
 function handleInputClear() {
-    if (display.textContent === "Err-maxdigits") resetCalculator();
     resetDisplay();
 }
 
@@ -148,15 +145,17 @@ function operate(operator, operandLeft, operandRight) {
 
 //function to check if string is 10 digits or less long.  If longer and decimal, round to fit 10 digits otherwise number is too big so error
 function toMaxTenDigits(string) {
+    console.log(currentInputEqual, currentInputOperator, string);
     // if 10 digits or less, just return string
     if (string.length <= 10) return string;
-    // if no decimal point in number and not user input -> Error: number too large to display
-    else if (string.indexOf(".") === -1 && (currentInputEqual || currentInputOperator)) {
-        return "Err-maxdigits";
+    // if no decimal point in number or scientific notation e+ (i.e. very large numbers) and not user input -> return scientific notation ***limited to 10 digits***
+    else if ((string.indexOf(".") === -1 || string.indexOf(".") >= 10 || string.indexOf("e+") !== -1) && (currentInputEqual || currentInputOperator)) {
+        const fullExpNumber = (Number.parseFloat(string).toExponential()).toString();
+        return Number.parseFloat(string).toExponential(10 - (2 + (fullExpNumber.substring(fullExpNumber.indexOf("e"))).length));
     }
-    // if has decimal point round by -> move decimal to just after 9th number, round number, move decimal back by same number of digits
+    // if has decimal point and not user input round by -> move decimal to just after 9th number, round number, move decimal back by same number of digits
     else if (currentInputEqual || currentInputOperator) { // filter out user input strings > 10 digits to ignore in next else
-        return Math.round(Number.parseFloat(string) * (10 ** (10 - string.indexOf(".")))) / 10 **(10 - string.indexOf("."));
+        return Math.round(Number.parseFloat(string) * (10 ** (9 - string.indexOf(".")))) / 10 **(9 - string.indexOf("."));
     }
     // else return the string with the last digit thrown away
     else return string.slice(0 , length -1);
@@ -194,6 +193,7 @@ function updateDisplay(value) {
 }
 
 //MAIN SCRIPT START
+
 let operandLeft = null;
 let operator = null;
 let operandRight = null;
