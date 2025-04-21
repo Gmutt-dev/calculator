@@ -103,7 +103,7 @@ document.addEventListener("keydown", (e) => {
 })
 //END MAIN SCRIPT
 
-////// HANDLER FUCTIONS
+////// HANDLER FUNCTIONS
 
 // "1..9" input -> update display
 function handleInput1to9(inputValue) {
