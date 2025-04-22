@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@font-face {
+    font-family: "Roboto Mono";
+    src: url(./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
+  }
 
 body {
     height: 100vh;
@@ -73,7 +76,7 @@ body {
 .shortcuts div {
     /* handle as inline block, so all stay on one line, or whole div drops to next line when viewport gets too small */
     display: inline-block;
-    width: 185px;
+    width: 210px;
     border-style: ridge;
     padding: 3px;
 }
